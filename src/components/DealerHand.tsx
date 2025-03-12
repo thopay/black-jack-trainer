@@ -26,11 +26,35 @@ export default function DealerHand(props: {
   
   // Trigger animation when cards change or when explicitly requested
   useEffect(() => {
-    if (props.cards.length && (props.animate !== false)) {
+    if (props.cards.length) {
+      // Force animation to be disabled first
       setShowAnimation(false);
-      setTimeout(() => setShowAnimation(true), 10);
+      
+      // Clear any existing animation timers
+      const timer = setTimeout(() => {
+        setShowAnimation(true);
+      }, 50); // Slightly longer delay for more reliable reset
+      
+      // Clean up timer on unmount or before next effect run
+      return () => clearTimeout(timer);
     }
-  }, [props.cards, props.animate]);
+  }, [props.cards]);
+
+  // Calculate dynamic overlap based on card count
+  const getOverlap = (totalCards: number, index: number) => {
+    if (index === 0) return 0; // First card has no overlap
+    
+    // Base overlap for 2-3 cards
+    let overlap = -60;
+    
+    // Increase overlap as more cards are added
+    if (totalCards > 3) {
+      // More aggressive overlap for more cards
+      overlap = -100;
+    }
+    
+    return overlap;
+  };
 
   return (
     <view className="dealerHandContainer">
@@ -49,20 +73,22 @@ export default function DealerHand(props: {
             }
           }
           
-          // Use negative margins for overlapping
+          // Calculate dynamic margin for this card
+          const marginLeft = getOverlap(props.cards.length, index);
+          
           return (
             <view 
               key={`dealer-card-${index}`}
               className={`dealerCard ${animationClass}`}
               style={{ 
                 zIndex: index,
-                marginLeft: index === 0 ? '0' : '-60px'  // Overlap cards
+                marginLeft: `${marginLeft}px`
               }}
             >
               <PlayingCard
                 value={card.value}
                 type={index === 1 && !props.revealAll ? 'flipped' : card.suit}
-                width={50}
+                width={40}
               />
             </view>
           );

@@ -12,7 +12,8 @@
   justify-content: center;
   align-items: center;
   position: relative;
-  padding: 0 50px; /* Add padding to ensure cards don't overflow container */
+  max-width: 90%; /* Ensure cards stay contained within screen */
+  overflow: visible; /* Allow animation overflow */
 }
 
 .dealerCard {
@@ -20,8 +21,9 @@
   box-shadow: -4px 4px 16px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
   transition: all 0.4s ease;
-  /* No margin - we use negative margin-left in the component */
+  min-width: 30px; /* Ensure at least this much of the card is visible */
 }
+
 
 /* Animation for first dealer card - from top */
 @keyframes dealCard1 {
@@ -81,4 +83,10 @@
 
 .dealer-new-card {
   animation: dealerNewCard 0.5s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
+}
+
+.deal-animation-1, 
+.deal-animation-2, 
+.dealer-new-card {
+  animation-fill-mode: both !important; /* Ensure animation end state is preserved */
 }

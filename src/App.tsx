@@ -19,6 +19,7 @@ export function App() {
   const [correctMove, setCorrectMove] = useState<BlackjackMove | null>(null);
   const [animateCards, setAnimateCards] = useState(true);
   const [playThroughMode, setPlayThroughMode] = useState(false);
+  const [loading, setLoading] = useState(true);
   
   // New state variables for play through mode
   const [gameState, setGameState] = useState<'initial' | 'playing' | 'result'>('initial');
@@ -30,8 +31,10 @@ export function App() {
 
   // Deal initial cards
   const dealNewHands = useCallback(() => {
-    // First reset animation flag
+    // First reset animation flag and clear all hands
     setAnimateCards(false);
+    setDealerHand([]);
+    setPlayerHand([]);
     
     // Reset game state
     setGameState('initial');
@@ -45,10 +48,11 @@ export function App() {
       const newDeck = new BlackjackDeck();
       newDeck.reshuffle();
       setDeck(newDeck);
-
+  
       const newDealerHand = newDeck.dealBlackjackHand();
       const newPlayerHand = newDeck.dealBlackjackHand();
       
+      // Set new hands
       setDealerHand(newDealerHand);
       setPlayerHand(newPlayerHand);
       
@@ -59,14 +63,17 @@ export function App() {
       setLastMove(null);
       setCorrectMove(null);
       
-      // Trigger animations
-      setAnimateCards(true);
-    }, 50);
+      // Trigger animations with a slightly longer delay
+      setTimeout(() => {
+        setAnimateCards(true);
+      }, 50);
+    }, 150); // Longer delay for more reliable reset
   }, []);
 
   // Load the game
   useEffect(() => {
     dealNewHands();
+    setLoading(false);
   }, [dealNewHands]);
 
   // Handle player choices and check if they are correct
@@ -267,7 +274,7 @@ export function App() {
   }, [playThroughMode, dealNewHands]);
 
   // Wait for cards to be dealt
-  if (dealerHand.length === 0 || playerHand.length === 0) {
+  if (loading) {
     return (
       <view className="Loading">
         <text>Dealing cards...</text>
