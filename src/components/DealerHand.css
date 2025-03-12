@@ -12,3 +12,47 @@
   margin-left: -30vw;
   top: 20px;
 }
+
+/* Animation for first dealer card - from top */
+@keyframes dealCard1 {
+  0% {
+    transform: translateY(-150px) rotate(-10deg);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* Animation for second dealer card - from top */
+@keyframes dealCard2 {
+  0% {
+    transform: translateY(-150px) rotate(-10deg);
+    opacity: 0;
+  }
+  /* Wait for first card to be almost dealt */
+  30% {
+    transform: translateY(-150px) rotate(-10deg);
+    opacity: 0;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* Apply animations */
+.deal-animation-1 {
+  animation: dealCard1 0.6s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
+}
+
+.deal-animation-2 {
+  animation: dealCard2 0.9s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
+}

@@ -16,24 +16,34 @@ export function App() {
   const [canSplit, setCanSplit] = useState<boolean>(false);
   const [lastMove, setLastMove] = useState<BlackjackMove | null>(null);
   const [correctMove, setCorrectMove] = useState<BlackjackMove | null>(null);
+  const [animateCards, setAnimateCards] = useState(true);
 
   // Deal initial cards
   const dealNewHands = useCallback(() => {
-    const deck = new BlackjackDeck();
-    deck.reshuffle();
+    // First reset animation flag
+    setAnimateCards(false);
+    
+    // Give a small delay to ensure animation reset
+    setTimeout(() => {
+      const deck = new BlackjackDeck();
+      deck.reshuffle();
 
-    const newDealerHand = deck.dealBlackjackHand();
-    const newPlayerHand = deck.dealBlackjackHand();
-    
-    setDealerHand(newDealerHand);
-    setPlayerHand(newPlayerHand);
-    
-    // Check if player can split (have same value cards)
-    setCanSplit(BlackjackStrategy.isPair(newPlayerHand));
-    
-    // Reset move tracking
-    setLastMove(null);
-    setCorrectMove(null);
+      const newDealerHand = deck.dealBlackjackHand();
+      const newPlayerHand = deck.dealBlackjackHand();
+      
+      setDealerHand(newDealerHand);
+      setPlayerHand(newPlayerHand);
+      
+      // Check if player can split (have same value cards)
+      setCanSplit(BlackjackStrategy.isPair(newPlayerHand));
+      
+      // Reset move tracking
+      setLastMove(null);
+      setCorrectMove(null);
+      
+      // Trigger animations
+      setAnimateCards(true);
+    }, 50);
   }, []);
 
   // Load the game
@@ -107,7 +117,7 @@ export function App() {
     <view>
       <view className="App">
         <view className="DealerHand">
-          <DealerHand cards={dealerHand} />
+          <DealerHand cards={dealerHand} animate={animateCards} />
         </view>
         <view className='CorrectStatus'>
           <text className={correct ? 'CorrectMove' : 'IncorrectMove'}>
@@ -115,7 +125,7 @@ export function App() {
           </text>
         </view>
         <view className="PlayerHand">
-          <PlayerHand cards={playerHand} />
+          <PlayerHand cards={playerHand} animate={animateCards} />
         </view>
         <view className="PlayerChoices">
           <PlayerChoices

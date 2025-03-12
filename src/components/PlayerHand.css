@@ -9,3 +9,47 @@
   margin-left: 5px;
   margin-right: 5px;
 }
+
+ /* Animation for first player card - from top */
+  @keyframes playerDealCard1 {
+	0% {
+	  transform: translateY(-200px) rotate(-5deg);
+	  opacity: 0;
+	}
+	60% {
+	  opacity: 1;
+	}
+	100% {
+	  transform: translateY(0) rotate(0deg);
+	  opacity: 1;
+	}
+  }
+  
+  /* Animation for second player card - from top */
+  @keyframes playerDealCard2 {
+	0% {
+	  transform: translateY(-200px) rotate(-5deg);
+	  opacity: 0;
+	}
+	/* Wait for first card to be almost dealt */
+	30% {
+	  transform: translateY(-200px) rotate(-5deg);
+	  opacity: 0;
+	}
+	90% {
+	  opacity: 1;
+	}
+	100% {
+	  transform: translateY(0) rotate(0deg);
+	  opacity: 1;
+	}
+  }
+  
+  /* Apply animations */
+  .player-deal-animation-1 {
+	animation: playerDealCard1 1.1s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
+  }
+  
+  .player-deal-animation-2 {
+	animation: playerDealCard2 1.4s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
+  }
