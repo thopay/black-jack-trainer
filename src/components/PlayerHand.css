@@ -1,16 +1,27 @@
-.playerHand {
-  display: flex;
-  flex-direction: row;
-}
-
-.playerCard {
-  box-shadow: -4px 4px 16px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
-  margin-left: 5px;
-  margin-right: 5px;
-}
-
- /* Animation for first player card - from top */
+.playerHandContainer {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+  }
+  
+  .playerHand {
+	display: flex;
+	position: relative;
+	height: 100%;
+	width: 200px;
+	align-items: center;
+	justify-content: center;
+  }
+  
+  .playerCard {
+	position: absolute;
+	box-shadow: -4px 4px 16px rgba(0, 0, 0, 0.25);
+	border-radius: 10px;
+	transition: all 0.3s ease;
+  }
+  
+  /* Animation for first player card - from top */
   @keyframes playerDealCard1 {
 	0% {
 	  transform: translateY(-200px) rotate(-5deg);
@@ -45,6 +56,18 @@
 	}
   }
   
+  /* Animation for new cards */
+  @keyframes playerNewCard {
+	0% {
+	  transform: translateY(-70px) rotate(-5deg);
+	  opacity: 0;
+	}
+	100% {
+	  transform: translateY(0) rotate(0deg);
+	  opacity: 1;
+	}
+  }
+  
   /* Apply animations */
   .player-deal-animation-1 {
 	animation: playerDealCard1 1.1s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
@@ -52,4 +75,8 @@
   
   .player-deal-animation-2 {
 	animation: playerDealCard2 1.4s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
+  }
+  
+  .player-new-card {
+	animation: playerNewCard 0.5s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
   }

@@ -7,6 +7,7 @@ import './DealerHand.css';
 export default function DealerHand(props: {
     cards: Array<Card>;
     animate?: boolean;
+    revealAll?: boolean;
 }) {
   const [showAnimation, setShowAnimation] = useState(false);
   
@@ -19,20 +20,22 @@ export default function DealerHand(props: {
   }, [props.cards, props.animate]);
 
   return (
-    <view className="Hand">
-      <view className={`card1 ${showAnimation ? 'deal-animation-1' : ''}`}>
-        <PlayingCard
-          value={props.cards[0].value}
-          type={props.cards[0].suit}
-          width={50}
-        />
-      </view>
-      <view className={`card2 ${showAnimation ? 'deal-animation-2' : ''}`}>
-        <PlayingCard
-          value={props.cards[1].value}
-          type={'flipped'}
-          width={50}
-        />
+    <view className="dealerHandContainer">
+      <view className="dealerHand">
+        {props.cards.map((card, index) => (
+          <view 
+            key={`dealer-card-${index}`}
+            className={`dealerCard ${showAnimation && index < 2 ? 
+              `deal-animation-${index + 1}` : index >= 2 ? 'dealer-new-card' : ''}`}
+            style={{ left: `${index * 30}px`, zIndex: index }}
+          >
+            <PlayingCard
+              value={card.value}
+              type={index === 1 && !props.revealAll ? 'flipped' : card.suit}
+              width={50}
+            />
+          </view>
+        ))}
       </view>
     </view>
   );

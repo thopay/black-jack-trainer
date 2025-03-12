@@ -1,16 +1,24 @@
-.Hand {
+.dealerHandContainer {
   display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
-.card1,
-.card2 {
+.dealerHand {
+  display: flex;
+  position: relative;
+  height: 100%;
+  width: 200px;
+  align-items: center;
+  justify-content: center;
+}
+
+.dealerCard {
+  position: absolute;
   box-shadow: -4px 4px 16px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
-}
-
-.card2 {
-  margin-left: -30vw;
-  top: 20px;
+  transition: all 0.3s ease;
 }
 
 /* Animation for first dealer card - from top */
@@ -48,6 +56,18 @@
   }
 }
 
+/* Animation for new dealer cards */
+@keyframes dealerNewCard {
+  0% {
+    transform: translateY(-70px) rotate(-5deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
 /* Apply animations */
 .deal-animation-1 {
   animation: dealCard1 0.6s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
@@ -55,4 +75,8 @@
 
 .deal-animation-2 {
   animation: dealCard2 0.9s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
+}
+
+.dealer-new-card {
+  animation: dealerNewCard 0.5s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
 }

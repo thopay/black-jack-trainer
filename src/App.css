@@ -8,23 +8,49 @@
   flex-direction: column;
   width: 100vw;
   height: 100vh;
+  /* Add padding-top to move everything down */
+  padding-top: 20px;
+}
+
+.Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  /* Increase margin-top to push it further down */
+  margin-top: 30px;
+}
+
+.Title {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.PlayThroughToggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
 }
 
 .DealerHand {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 40vh;
-  margin-top: 5vh;
+  height: 35vh;
+  /* Adjust margin-top to compensate for the header changes */
+  margin-top: 2vh;
 }
 
 .PlayerHand {
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 30vh;
 }
 
-.CorrectStatus {
+.GameStatus {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,4 +68,31 @@
   color: #FFD166;
   font-size: 40px;
   font-weight: 500;
+}
+
+.GameResult {
+  font-size: 40px;
+  font-weight: 600;
+}
+
+.PlayerWins {
+  color: #06D6A0;
+}
+
+.DealerWins {
+  color: #EF476F;
+}
+
+.GamePush {
+  color: #FFD166;
+}
+
+.Loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  color: white;
+  font-size: 24px;
 }
