@@ -3,22 +3,24 @@
 	justify-content: center;
 	width: 100%;
 	height: 100%;
+	align-items: center;
   }
   
-  .playerHand {
+  .playerCardArea {
 	display: flex;
-	position: relative;
-	height: 100%;
-	width: 200px;
-	align-items: center;
+	flex-direction: row;
 	justify-content: center;
+	align-items: center;
+	position: relative;
+	padding: 0 50px; /* Add padding to ensure cards don't overflow container */
   }
   
   .playerCard {
-	position: absolute;
+	display: inline-block;
 	box-shadow: -4px 4px 16px rgba(0, 0, 0, 0.25);
 	border-radius: 10px;
-	transition: all 0.3s ease;
+	transition: all 0.4s ease;
+	/* No margin - we use negative margin-left in the component */
   }
   
   /* Animation for first player card - from top */
@@ -59,11 +61,11 @@
   /* Animation for new cards */
   @keyframes playerNewCard {
 	0% {
-	  transform: translateY(-70px) rotate(-5deg);
+	  transform: translateY(-70px) translateX(70px) rotate(-5deg);
 	  opacity: 0;
 	}
 	100% {
-	  transform: translateY(0) rotate(0deg);
+	  transform: translateY(0) translateX(0) rotate(0deg);
 	  opacity: 1;
 	}
   }

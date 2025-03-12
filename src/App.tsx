@@ -141,6 +141,10 @@ export function App() {
             const updatedHand = [...playerHand, newCard];
             setPlayerHand(updatedHand);
             
+            // Reset move highlights after dealing a new card
+            setLastMove(null);
+            setCorrectMove(null);
+            
             // Check if busted
             const handValue = BlackjackDeck.calculateHandValue(updatedHand).total;
             if (handValue > 21) {
@@ -165,6 +169,10 @@ export function App() {
           if (newCard) {
             const updatedHand = [...playerHand, newCard];
             setPlayerHand(updatedHand);
+            
+            // Reset move highlights
+            setLastMove(null);
+            setCorrectMove(null);
             
             // After double down, automatically stand
             const handValue = BlackjackDeck.calculateHandValue(updatedHand).total;
