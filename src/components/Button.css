@@ -1,0 +1,66 @@
+.playerButton {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    color: black;
+    height: 7vh;
+    width: 42vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4px 2px;
+    cursor: pointer;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.1s ease, background-color 0.1s ease, box-shadow 0.1s ease;
+}
+
+.playerButton.pressed {
+    transform: scale(0.97);
+    background-color: #F5F5F5;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.buttonDisabled {
+    background-color: #C0C0C0;
+    border-radius: 10px;
+    color: black;
+    height: 7vh;
+    width: 42vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4px 2px;
+    cursor: not-allowed;
+    opacity: 0.8;
+    box-shadow: none;
+}
+
+.buttonText {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Optional: add some hover effect for desktop */
+@media (hover: hover) {
+    .playerButton:hover {
+        background-color: #F8F8F8;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+    }
+}
+
+.correctButton {
+	background-color: #4CAF50 !important; /* Green */
+	color: white !important;
+	box-shadow: 0px 3px 8px rgba(76, 175, 80, 0.3) !important;
+  }
+  
+  .incorrectButton {
+	background-color: #FFC107 !important; /* Yellow */
+	color: black !important;
+	box-shadow: 0px 3px 8px rgba(255, 193, 7, 0.3) !important;
+  }
+  
+  /* Make sure the important rules don't interfere with pressed state */
+  .correctButton.pressed, .incorrectButton.pressed {
+	transform: scale(0.97);
+	box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15) !important;
+  }

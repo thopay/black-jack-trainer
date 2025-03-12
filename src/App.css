@@ -1,0 +1,45 @@
+:root {
+  background-color: #073B4C;
+  --color-text: #fff;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+}
+
+.DealerHand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40vh;
+  margin-top: 5vh;
+}
+
+.PlayerHand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.CorrectStatus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  height: 40px;
+}
+
+.CorrectMove {
+  color: #06D6A0;
+  font-size: 40px;
+  font-weight: 500;
+}
+
+.IncorrectMove {
+  color: #FFD166;
+  font-size: 40px;
+  font-weight: 500;
+}
