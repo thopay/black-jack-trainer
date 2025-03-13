@@ -107,29 +107,3 @@ class BlackjackDeck {
 // Export the class
 export { BlackjackDeck };
 export type { Card, CardValue, Suit };
-
-// // Example usage:
-// function playBlackjack() {
-//   const deck = new BlackjackDeck();
-  
-//   // Deal hands
-//   const playerHand = deck.dealBlackjackHand();
-//   const dealerHand = deck.dealBlackjackHand();
-  
-//   console.log('Player hand:', playerHand);
-//   console.log('Player score:', BlackjackDeck.calculateHandValue(playerHand));
-  
-//   console.log('Dealer hand:', dealerHand);
-//   console.log('Dealer score:', BlackjackDeck.calculateHandValue(dealerHand));
-  
-//   // Hit (draw another card)
-//   const newCard = deck.dealCard();
-//   if (newCard) {
-//     console.log('Player hits and gets:', newCard);
-//     playerHand.push(newCard);
-//     console.log('New player score:', BlackjackDeck.calculateHandValue(playerHand));
-//   }
-// }
-
-// // Run the example
-// playBlackjack();

@@ -21,13 +21,20 @@ export function App() {
   const [playThroughMode, setPlayThroughMode] = useState(false);
   const [loading, setLoading] = useState(true);
   
-  // New state variables for play through mode
   const [gameState, setGameState] = useState<'initial' | 'playing' | 'result'>('initial');
   const [deck, setDeck] = useState<BlackjackDeck | null>(null);
   const [playerBusted, setPlayerBusted] = useState(false);
   const [dealerBusted, setDealerBusted] = useState(false);
   const [gameResult, setGameResult] = useState<'win' | 'lose' | 'push' | null>(null);
   const [dealerCardsRevealed, setDealerCardsRevealed] = useState(false);
+  const [playerBlackjack, setPlayerBlackjack] = useState(false);
+  const [dealerBlackjack, setDealerBlackjack] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<string>('');
+
+  // Check for blackjack
+  const checkForBlackjack = useCallback((hand: Card[]) => {
+    return hand.length === 2 && BlackjackDeck.calculateHandValue(hand).total === 21;
+  }, []);
 
   // Deal initial cards
   const dealNewHands = useCallback(() => {
@@ -42,6 +49,9 @@ export function App() {
     setDealerBusted(false);
     setGameResult(null);
     setDealerCardsRevealed(false);
+    setPlayerBlackjack(false);
+    setDealerBlackjack(false);
+    setStatusMessage('');
     
     // Give a small delay to ensure animation reset
     setTimeout(() => {
@@ -63,12 +73,54 @@ export function App() {
       setLastMove(null);
       setCorrectMove(null);
       
+      // Check for blackjacks
+      const hasPlayerBlackjack = checkForBlackjack(newPlayerHand);
+      const hasDealerBlackjack = checkForBlackjack(newDealerHand);
+      
+      setPlayerBlackjack(hasPlayerBlackjack);
+      setDealerBlackjack(hasDealerBlackjack);
+      
+      // Handle blackjack scenarios in play through mode
+      if (playThroughMode && (hasPlayerBlackjack || hasDealerBlackjack)) {
+        setTimeout(() => {
+          handleBlackjackScenario(hasPlayerBlackjack, hasDealerBlackjack);
+        }, 1000);
+      } else if (hasPlayerBlackjack) {
+        setStatusMessage('Blackjack! (Stand is always correct)');
+      }
+      
       // Trigger animations with a slightly longer delay
       setTimeout(() => {
         setAnimateCards(true);
       }, 50);
     }, 150); // Longer delay for more reliable reset
-  }, []);
+  }, [checkForBlackjack, playThroughMode]);
+
+  // Handle blackjack scenario
+  const handleBlackjackScenario = useCallback((playerHasBlackjack: boolean, dealerHasBlackjack: boolean) => {
+    setDealerCardsRevealed(true);
+    
+    setTimeout(() => {
+      if (playerHasBlackjack && dealerHasBlackjack) {
+        // Both have blackjack - push
+        setStatusMessage('Both have Blackjack!');
+        setGameResult('push');
+      } else if (playerHasBlackjack) {
+        // Player has blackjack, dealer doesn't - player wins
+        setStatusMessage('Blackjack! You win 3:2');
+        setGameResult('win');
+      } else if (dealerHasBlackjack) {
+        // Dealer has blackjack, player doesn't - dealer wins
+        setStatusMessage('Dealer has Blackjack!');
+        setGameResult('lose');
+      }
+      
+      // Finish the game after showing result
+      setTimeout(() => {
+        dealNewHands();
+      }, 2500);
+    }, 1000);
+  }, [dealNewHands]);
 
   // Load the game
   useEffect(() => {
@@ -156,6 +208,7 @@ export function App() {
             const handValue = BlackjackDeck.calculateHandValue(updatedHand).total;
             if (handValue > 21) {
               setPlayerBusted(true);
+              setStatusMessage('Busted!');
               finishHand();
             } else {
               // Can continue playing
@@ -185,6 +238,7 @@ export function App() {
             const handValue = BlackjackDeck.calculateHandValue(updatedHand).total;
             if (handValue > 21) {
               setPlayerBusted(true);
+              setStatusMessage('Busted on double down!');
             }
             finishHand();
           }
@@ -237,12 +291,16 @@ export function App() {
           // Determine result
           if (dealerValue > 21) {
             setDealerBusted(true);
+            setStatusMessage('Dealer busts!');
             setGameResult('win');
           } else if (dealerValue > playerTotal) {
+            setStatusMessage(`Dealer has ${dealerValue}, you have ${playerTotal}`);
             setGameResult('lose');
           } else if (dealerValue < playerTotal) {
+            setStatusMessage(`You have ${playerTotal}, dealer has ${dealerValue}`);
             setGameResult('win');
           } else {
+            setStatusMessage(`Push - both have ${playerTotal}`);
             setGameResult('push');
           }
           
@@ -299,19 +357,31 @@ export function App() {
           <DealerHand 
             cards={dealerHand} 
             animate={animateCards} 
-            revealAll={dealerCardsRevealed}
+            revealAll={dealerCardsRevealed || dealerBlackjack}
           />
         </view>
         
         <view className='GameStatus'>
-          {gameResult && (
+          {statusMessage ? (
+            <text className={`GameMessage ${
+              statusMessage.includes('Busted') ? 'PlayerBusted' :
+              statusMessage.includes('Blackjack! You win') ? 'PlayerWins' :
+              statusMessage.includes('Dealer busts') ? 'PlayerWins' :
+              statusMessage.includes('Both have Blackjack') ? 'GamePush' :
+              statusMessage.includes('Push') ? 'GamePush' :
+              statusMessage.includes('Dealer has Blackjack') ? 'DealerWins' :
+              gameResult === 'win' ? 'PlayerWins' :
+              gameResult === 'lose' ? 'DealerWins' : ''
+            }`}>
+              {statusMessage}
+            </text>
+          ) : gameResult ? (
             <text className={`GameResult ${gameResult === 'win' ? 'PlayerWins' : 
                                gameResult === 'lose' ? 'DealerWins' : 'GamePush'}`}>
               {gameResult === 'win' ? 'You Win!' : 
                gameResult === 'lose' ? 'Dealer Wins' : 'Push'}
             </text>
-          )}
-          {!gameResult && (
+          ) : (
             <text className={correct ? 'CorrectMove' : 'IncorrectMove'}>
               {showCorrect ? (correct ? 'Correct!' : 'Not quite...') : ' '}
             </text>
@@ -333,7 +403,7 @@ export function App() {
             split={() => handlePlayerChoice('SP')}
             canSplit={canSplit}
             canDoubleDown={playerHand.length === 2}
-            buttonsEnabled={!processingChoice && (gameState !== 'result')}
+            buttonsEnabled={!processingChoice && (gameState !== 'result') && !playerBlackjack}
             lastMove={lastMove}
             correctMove={correctMove}
           />
