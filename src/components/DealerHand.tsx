@@ -1,5 +1,5 @@
 import PlayingCard from './PlayingCard.jsx';
-import type { Card } from '../utilities/Blackjack.js';
+import type { Card, Suit } from '../utilities/Blackjack.js';
 import { useEffect, useState } from '@lynx-js/react';
 
 import './DealerHand.css';
@@ -11,6 +11,9 @@ export default function DealerHand(props: {
 }) {
   const [showAnimation, setShowAnimation] = useState(false);
   const [lastCardIndex, setLastCardIndex] = useState(-1);
+  const [isFlipping, setIsFlipping] = useState(false);
+  const [cardState, setCardState] = useState<'flipped' | 'actual'>('flipped');
+  const [flipAnimationPlayed, setFlipAnimationPlayed] = useState(false);
   
   // Track the newest card for animation
   useEffect(() => {
@@ -40,6 +43,59 @@ export default function DealerHand(props: {
     }
   }, [props.cards]);
 
+  // Handle the card reveal state
+  useEffect(() => {
+    // Set initial card state when cards are dealt
+    if (props.cards.length > 1) {
+      if (props.revealAll) {
+        // If cards should be revealed from the start, show the actual card
+        setCardState('actual');
+      } else {
+        // Otherwise show flipped
+        setCardState('flipped');
+      }
+    }
+  }, [props.cards.length]);
+
+  // Handle the card flip animation
+  useEffect(() => {
+    // Only trigger flip animation when revealAll becomes true and we haven't played it yet
+    if (props.revealAll && !flipAnimationPlayed && cardState === 'flipped' && props.cards.length > 1) {
+      console.log('Starting flip animation');
+      
+      // Start flip animation but keep showing the flipped card
+      setIsFlipping(true);
+      
+      // At mid-point of animation, switch to the actual card
+      const flipMidTimer = setTimeout(() => {
+        console.log('Switching to actual card');
+        setCardState('actual');
+      }, 400); // Half of animation duration (ensure exact midpoint)
+      
+      // End the flip animation
+      const flipEndTimer = setTimeout(() => {
+        console.log('Ending flip animation');
+        setIsFlipping(false);
+        setFlipAnimationPlayed(true); // Mark that we've played the animation
+      }, 800);
+      
+      return () => {
+        clearTimeout(flipMidTimer);
+        clearTimeout(flipEndTimer);
+      };
+    }
+  }, [props.revealAll, cardState, flipAnimationPlayed, props.cards.length]);
+
+  // Reset animation state when dealing new cards
+  useEffect(() => {
+    if (props.cards.length === 0) {
+      console.log('Resetting animation state');
+      setIsFlipping(false);
+      setCardState('flipped');
+      setFlipAnimationPlayed(false);
+    }
+  }, [props.cards.length]);
+
   // Calculate dynamic overlap based on card count
   const getOverlap = (totalCards: number, index: number) => {
     if (index === 0) return 0; // First card has no overlap
@@ -64,6 +120,7 @@ export default function DealerHand(props: {
           let animationClass = '';
           
           if (showAnimation) {
+            // Only animate initial deal or new cards being added
             if (index < 2 && lastCardIndex < 2) {
               // Initial two cards animation
               animationClass = `deal-animation-${index + 1}`;
@@ -73,8 +130,17 @@ export default function DealerHand(props: {
             }
           }
           
+          // Add flip animation class to second card when revealing
+          if (index === 1 && isFlipping) {
+            // Only add flip animation for the hole card when revealing
+            animationClass = 'card-flip'; // Note: overwrites other animations
+          }
+          
           // Calculate dynamic margin for this card
           const marginLeft = getOverlap(props.cards.length, index);
+          
+          // Determine card type for rendering
+          const cardType = index === 1 && cardState === 'flipped' ? 'flipped' : card.suit;
           
           return (
             <view 
@@ -87,7 +153,7 @@ export default function DealerHand(props: {
             >
               <PlayingCard
                 value={card.value}
-                type={index === 1 && !props.revealAll ? 'flipped' : card.suit}
+                type={cardType}
                 width={40}
               />
             </view>

@@ -90,3 +90,25 @@
 .dealer-new-card {
   animation-fill-mode: both !important; /* Ensure animation end state is preserved */
 }
+
+@keyframes cardFlip {
+  0% {
+    transform: scaleX(1);
+  }
+  49.9% {
+    transform: scaleX(0.01); /* Almost completely flipped, but still visible */
+  }
+  50% {
+    transform: scaleX(0);
+  }
+  50.1% {
+    transform: scaleX(0.01); /* Start of second half */
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+.card-flip {
+  animation: cardFlip 0.7s ease-in-out forwards; /* Slow down animation */
+}
